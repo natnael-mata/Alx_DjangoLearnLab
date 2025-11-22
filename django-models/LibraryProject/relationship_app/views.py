@@ -1,7 +1,11 @@
 from django.shortcuts import HttpResponse, render
 from django.views.generic.detail import DetailView
 from .models import Book 
-from .models import Library
+from .models import Library 
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 # Create your views here.
 
 
@@ -24,6 +28,12 @@ class LibraryDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        library: Library = self.get_object()  # type hint avoids Pylance warning
-        context['books'] = library.books.all()  # All books in this library
+        library = self.get_object()  # type: Library
+        context['books'] = library.books.all()
         return context
+
+
+class Register(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy("login")
+    template_name = "registration/register.html"
