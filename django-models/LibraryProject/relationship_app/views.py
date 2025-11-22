@@ -13,14 +13,14 @@ def list_books(request):
     return render(request, 'relationship_app/list_books.html', context)
 
 
+
 class LibraryDetailView(DetailView):
     model = Library
-    template_name = 'library_detail.html'   
+    template_name = 'relationship_app/library_detail.html'  
     context_object_name = 'library'
 
- 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        library: Library = self.get_object()
-        context['books'] = library.books.all()
+        library: Library = self.get_object()  # type hint avoids Pylance warning
+        context['books'] = library.books.all()  # All books in this library
         return context
