@@ -1,5 +1,4 @@
 # query_samples.py
-
 from relationship_app.models import Author, Book, Library, Librarian
 
 # 1. Query all books by a specific author
