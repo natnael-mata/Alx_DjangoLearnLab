@@ -1,50 +1,43 @@
-from django.shortcuts import HttpResponse, render, redirect
+from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
-from .models import Book 
-from .models import Library 
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
-# Create your views here.
+from django.contrib.auth.decorators import user_passes_test
+from .models import Book, Library
 
-
+# -----------------------
+# Book List & Library Detail
+# -----------------------
 
 def list_books(request):
     books = Book.objects.all()
-
-    # Pass books to template
-    context = {'books': books}
-
-    # Render template
-    return render(request, 'relationship_app/list_books.html', context)
-
-
+    return render(request, 'relationship_app/list_books.html', {'books': books})
 
 class LibraryDetailView(DetailView):
     model = Library
-    template_name = 'relationship_app/library_detail.html'  
+    template_name = 'relationship_app/library_detail.html'
     context_object_name = 'library'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        library = self.get_object()  # type: Library
+        library = self.get_object()
         context['books'] = library.books.all()
         return context
 
+# -----------------------
+# Authentication
+# -----------------------
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)  # explicit instantiation
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('relationship_app:login') # or your desired page
+            return redirect('relationship_app:list_books')
     else:
-        form = UserCreationForm()  # explicit instantiation
-
+        form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
-
 
 def user_login(request):
     if request.method == "POST":
@@ -55,10 +48,36 @@ def user_login(request):
             return redirect("relationship_app:list_books")
     else:
         form = AuthenticationForm()
-
     return render(request, "relationship_app/login.html", {"form": form})
-
 
 def user_logout(request):
     logout(request)
     return redirect("relationship_app:login")
+
+# -----------------------
+# Role-based Dashboards
+# -----------------------
+
+# Admin
+def is_admin(user):
+    return hasattr(user, "userprofile") and user.userprofile.role == "Admin"
+
+@user_passes_test(is_admin)
+def admin_dashboard(request):
+    return render(request, "relationship_app/admin_view.html")
+
+# Librarian
+def is_librarian(user):
+    return hasattr(user, "userprofile") and user.userprofile.role == "Librarian"
+
+@user_passes_test(is_librarian)
+def librarian_dashboard(request):
+    return render(request, "relationship_app/librarian_view.html")
+
+# Member
+def is_member(user):
+    return hasattr(user, "userprofile") and user.userprofile.role == "Member"
+
+@user_passes_test(is_member)
+def member_dashboard(request):
+    return render(request, "relationship_app/member_view.html")
