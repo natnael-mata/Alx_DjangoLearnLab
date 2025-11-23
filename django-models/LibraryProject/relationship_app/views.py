@@ -2,8 +2,8 @@ from django.shortcuts import HttpResponse, render, redirect
 from django.views.generic.detail import DetailView
 from .models import Book 
 from .models import Library 
-from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 # Create your views here.
@@ -39,8 +39,26 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('login')  # or your desired page
+            return redirect('relationship_app:login') # or your desired page
     else:
         form = UserCreationForm()  # explicit instantiation
 
     return render(request, 'relationship_app/register.html', {'form': form})
+
+
+def user_login(request):
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect("relationship_app:list_books")
+    else:
+        form = AuthenticationForm()
+
+    return render(request, "relationship_app/login.html", {"form": form})
+
+
+def user_logout(request):
+    logout(request)
+    return redirect("relationship_app:login")
