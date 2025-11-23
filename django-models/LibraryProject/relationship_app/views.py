@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.detail import DetailView
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import user_passes_test
 from .models import Book, Library
+from django.contrib.auth.decorators import permission_required
+from .models import Book  # This is the proxy model
 
 # -----------------------
 # Book List & Library Detail
@@ -81,3 +83,19 @@ def is_member(user):
 @user_passes_test(is_member)
 def member_dashboard(request):
     return render(request, "relationship_app/member_view.html")
+
+
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book_view(request):
+    # Your code to add a book
+    return render(request, 'relationship_app/add_book.html')
+
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+def edit_book_view(request, book_id):
+    # Your code to edit a book
+    return render(request, 'relationship_app/edit_book.html')
+
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book_view(request, book_id):
+    # Your code to delete a book
+    return render(request, 'relationship_app/delete_book.html')
