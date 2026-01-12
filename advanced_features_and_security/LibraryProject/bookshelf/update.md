@@ -1,15 +1,11 @@
-# Update a Book instance
+## Update a Book
 
+Command to update the title of the book "1984" to "Nineteen Eighty-Four":
 ```python
-from bookshelf.models import Book
-
-# Retrieve the book you want to update
-book = Book.objects.get(id=1)
-
-# Update the title
+book = Book.objects.get(title="1984")
 book.title = "Nineteen Eighty-Four"
 book.save()
+book
 
-# Verify the update
-print(book.title, book.author, book.publication_year)
-# Expected output: Nineteen Eighty-Four John Doe 2025
+# Expected output:
+<Book: Nineteen Eighty-Four>

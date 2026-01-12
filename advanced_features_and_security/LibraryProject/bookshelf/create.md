@@ -1,13 +1,9 @@
-#1. Import the model
-from bookshelf.models import Book
+## Create a Book
 
-#2. Create Book Instance
-book = Book.objects.create(
-author="George Orwell",
-    publication_year=1949
-...     title="1984",
-...     author="George Orwell",
-...     publication_year=1949
-)
+<!-- Command to create a book: -->
+```python
+book = Book.objects.create(title="1984", author="George Orwell", publication_year=1949)
+book
 
-#3. Output
+# Expected output:
+<Book: 1984>

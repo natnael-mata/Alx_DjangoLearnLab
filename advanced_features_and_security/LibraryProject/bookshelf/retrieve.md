@@ -1,6 +1,9 @@
-#1. Printing Book Objects
-book = Book.objects.get(id=1)
-print(book.title, book.author, book.publication_year)
-#2. Output
+## Retrieve a Book
 
-#1984 George Orwell 1949
+<!-- Command to retrieve all books: -->
+```python
+books = Book.objects.get()
+books
+
+# Expected output:
+<QuerySet [<Book: 1984>]>

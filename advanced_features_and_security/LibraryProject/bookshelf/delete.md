@@ -1,14 +1,13 @@
-# Delete a Book instance
+## Delete a Book
 
+<!-- First, import the `Book` model: -->
 ```python
 from bookshelf.models import Book
 
-# Retrieve the book you want to delete
-book = Book.objects.get(id=1)
-
-# Delete the book
+# Command to delete the book:
 book.delete()
+books = Book.objects.all()
+books
 
-# Verify deletion
-Book.objects.filter(id=1)
-# Expected output: <QuerySet []>  (empty queryset, book deleted)
+# Expected output:
+<QuerySet []>
